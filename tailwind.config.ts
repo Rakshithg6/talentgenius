@@ -133,7 +133,20 @@ export default {
 				'none': 'none',
 				'blur': 'blur(20px)',
 			},
+			animationDelay: {
+				'2000': '2000ms',
+				'4000': '4000ms',
+			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		function({ addUtilities, theme }: any) {
+			const animationDelays = theme('animationDelay');
+			const utilities = Object.entries(animationDelays).map(([key, value]) => ({
+				[`.animation-delay-${key}`]: { 'animation-delay': value },
+			}));
+			addUtilities(utilities);
+		}
+	],
 } satisfies Config;
