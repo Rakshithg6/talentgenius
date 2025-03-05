@@ -140,8 +140,8 @@ const ResumeAnalysis = () => {
                     onChange={handleFileChange}
                   />
                   <label htmlFor="resume-upload">
-                    <Button variant="outline" className="rounded-lg" as="span">
-                      Browse files
+                    <Button variant="outline" className="rounded-lg" asChild>
+                      <span>Browse files</span>
                     </Button>
                   </label>
                   <p className="text-xs text-muted-foreground mt-4">
