@@ -3,9 +3,11 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Upload, FileText, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ResumeAnalysis = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -77,10 +79,11 @@ const ResumeAnalysis = () => {
         description: "Your resume has been processed with our AI.",
       });
       
-      // Reset after some time
+      // Reset after some time and navigate to dashboard
       setTimeout(() => {
         setFile(null);
         setIsSuccess(false);
+        navigate('/dashboard');
       }, 3000);
     }, 2000);
   };

@@ -1,9 +1,25 @@
 
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Search, FileText, BarChart } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleGetStarted = () => {
+    navigate("/upload");
+  };
+
+  const handleLearnMore = () => {
+    // Scroll to features section
+    const featuresSection = document.querySelector('.features-section');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden">
       {/* Background blobs */}
@@ -31,11 +47,20 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12 animate-fade-up" style={{ animationDelay: "300ms" }}>
-            <Button className="rounded-full px-6 py-6 text-base font-medium gap-2 group" size="lg">
+            <Button 
+              className="rounded-full px-6 py-6 text-base font-medium gap-2 group" 
+              size="lg"
+              onClick={handleGetStarted}
+            >
               Get Started
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="outline" className="rounded-full px-6 py-6 text-base font-medium" size="lg">
+            <Button 
+              variant="outline" 
+              className="rounded-full px-6 py-6 text-base font-medium" 
+              size="lg"
+              onClick={handleLearnMore}
+            >
               Learn more
             </Button>
           </div>
@@ -43,7 +68,7 @@ const Hero = () => {
         
         {/* Feature preview cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 animate-fade-up" style={{ animationDelay: "450ms" }}>
-          <div className="glass-card rounded-xl p-6 card-hover">
+          <div className="glass-card rounded-xl p-6 card-hover" onClick={() => navigate("/upload")}>
             <div className="bg-blue-50 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
               <FileText className="text-primary h-6 w-6" />
             </div>
@@ -51,7 +76,7 @@ const Hero = () => {
             <p className="text-muted-foreground text-sm">Extract skills and experience with AI-powered resume parsing</p>
           </div>
           
-          <div className="glass-card rounded-xl p-6 card-hover">
+          <div className="glass-card rounded-xl p-6 card-hover" onClick={() => navigate("/dashboard")}>
             <div className="bg-blue-50 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
               <Search className="text-primary h-6 w-6" />
             </div>
@@ -59,7 +84,7 @@ const Hero = () => {
             <p className="text-muted-foreground text-sm">Find ideal candidates with intelligent job-resume matching</p>
           </div>
           
-          <div className="glass-card rounded-xl p-6 card-hover">
+          <div className="glass-card rounded-xl p-6 card-hover" onClick={() => navigate("/dashboard")}>
             <div className="bg-blue-50 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
               <BarChart className="text-primary h-6 w-6" />
             </div>

@@ -7,8 +7,19 @@ import ResumeAnalysis from "@/components/sections/ResumeAnalysis";
 import Dashboard from "@/components/sections/Dashboard";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Briefcase, Zap, CloudLightning } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+
+  const handleStartNow = () => {
+    navigate("/upload");
+  };
+
+  const handleGetStartedFree = () => {
+    navigate("/upload");
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
@@ -21,7 +32,7 @@ const Index = () => {
         <ResumeAnalysis />
         
         {/* How it works section */}
-        <section className="section">
+        <section className="section features-section">
           <div className="page-container">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
@@ -62,7 +73,10 @@ const Index = () => {
             </div>
             
             <div className="text-center">
-              <Button className="rounded-full px-6 py-6 text-base font-medium gap-2 group">
+              <Button 
+                className="rounded-full px-6 py-6 text-base font-medium gap-2 group"
+                onClick={handleStartNow}
+              >
                 Start Now
                 <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -85,6 +99,7 @@ const Index = () => {
               <Button 
                 variant="secondary" 
                 className="rounded-full px-8 py-6 text-primary font-medium text-base"
+                onClick={handleGetStartedFree}
               >
                 Get Started for Free
               </Button>

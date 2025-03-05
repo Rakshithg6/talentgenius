@@ -1,13 +1,16 @@
 
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -19,6 +22,20 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogin = () => {
+    toast({
+      title: "Login functionality",
+      description: "Login feature will be implemented in the next update.",
+    });
+  };
+
+  const handleSignup = () => {
+    toast({
+      title: "Sign up functionality",
+      description: "Sign up feature will be implemented in the next update.",
+    });
+  };
 
   return (
     <header
@@ -62,10 +79,14 @@ const Navbar = () => {
             <Button
               variant="outline"
               className="rounded-full px-5 py-2 transition-all duration-300"
+              onClick={handleLogin}
             >
               Log in
             </Button>
-            <Button className="rounded-full px-5 py-2 transition-all duration-300">
+            <Button 
+              className="rounded-full px-5 py-2 transition-all duration-300"
+              onClick={handleSignup}
+            >
               Sign up
             </Button>
           </div>
@@ -113,13 +134,19 @@ const Navbar = () => {
                 <Button
                   variant="outline"
                   className="w-full justify-center"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogin();
+                  }}
                 >
                   Log in
                 </Button>
                 <Button
                   className="w-full justify-center"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleSignup();
+                  }}
                 >
                   Sign up
                 </Button>
