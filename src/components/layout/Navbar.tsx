@@ -2,8 +2,17 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -11,6 +20,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, logout } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -23,18 +33,8 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogin = () => {
-    toast({
-      title: "Login functionality",
-      description: "Login feature will be implemented in the next update.",
-    });
-  };
-
-  const handleSignup = () => {
-    toast({
-      title: "Sign up functionality",
-      description: "Sign up feature will be implemented in the next update.",
-    });
+  const handleLoginClick = () => {
+    navigate("/login");
   };
 
   return (
@@ -61,34 +61,86 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link
-              to="/upload"
-              className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
-            >
-              Resume Upload
-            </Link>
-            <Link
-              to="/dashboard"
-              className={`nav-link ${isActive("/dashboard") ? "text-primary" : ""}`}
-            >
-              Dashboard
-            </Link>
+            
+            {user ? (
+              // Show different menu items based on user role
+              user.role === "hr" ? (
+                <>
+                  <Link
+                    to="/hr-dashboard"
+                    className={`nav-link ${isActive("/hr-dashboard") ? "text-primary" : ""}`}
+                  >
+                    HR Dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/upload"
+                    className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
+                  >
+                    Resume Upload
+                  </Link>
+                  <Link
+                    to="/dashboard"
+                    className={`nav-link ${isActive("/dashboard") ? "text-primary" : ""}`}
+                  >
+                    Dashboard
+                  </Link>
+                </>
+              )
+            ) : (
+              // Options for not logged in users
+              <>
+                <Link
+                  to="/upload"
+                  className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
+                >
+                  Resume Upload
+                </Link>
+              </>
+            )}
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Button
-              variant="outline"
-              className="rounded-full px-5 py-2 transition-all duration-300"
-              onClick={handleLogin}
-            >
-              Log in
-            </Button>
-            <Button 
-              className="rounded-full px-5 py-2 transition-all duration-300"
-              onClick={handleSignup}
-            >
-              Sign up
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="rounded-full gap-2">
+                    <User className="h-4 w-4" />
+                    {user.name}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  className="rounded-full px-5 py-2 transition-all duration-300"
+                  onClick={handleLoginClick}
+                >
+                  Log in
+                </Button>
+                <Button 
+                  className="rounded-full px-5 py-2 transition-all duration-300"
+                  onClick={() => navigate("/login?tab=signup")}
+                >
+                  Sign up
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -116,40 +168,84 @@ const Navbar = () => {
               >
                 Home
               </Link>
-              <Link
-                to="/upload"
-                className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Resume Upload
-              </Link>
-              <Link
-                to="/dashboard"
-                className={`nav-link ${isActive("/dashboard") ? "text-primary" : ""}`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
+              
+              {user ? (
+                // Show different menu items based on user role
+                user.role === "hr" ? (
+                  <>
+                    <Link
+                      to="/hr-dashboard"
+                      className={`nav-link ${isActive("/hr-dashboard") ? "text-primary" : ""}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      HR Dashboard
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/upload"
+                      className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Resume Upload
+                    </Link>
+                    <Link
+                      to="/dashboard"
+                      className={`nav-link ${isActive("/dashboard") ? "text-primary" : ""}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                  </>
+                )
+              ) : (
+                // Options for not logged in users
+                <Link
+                  to="/upload"
+                  className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Resume Upload
+                </Link>
+              )}
+              
               <div className="flex flex-col space-y-2 pt-4">
-                <Button
-                  variant="outline"
-                  className="w-full justify-center"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    handleLogin();
-                  }}
-                >
-                  Log in
-                </Button>
-                <Button
-                  className="w-full justify-center"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    handleSignup();
-                  }}
-                >
-                  Sign up
-                </Button>
+                {user ? (
+                  <Button
+                    variant="outline"
+                    className="w-full justify-center gap-2"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      logout();
+                    }}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Log out
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-center"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigate("/login");
+                      }}
+                    >
+                      Log in
+                    </Button>
+                    <Button
+                      className="w-full justify-center"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigate("/login?tab=signup");
+                      }}
+                    >
+                      Sign up
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>
