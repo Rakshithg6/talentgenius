@@ -88,8 +88,8 @@ const Hero = () => {
           
           <div className="relative rounded-xl overflow-hidden shadow-xl">
             <img 
-              src="/lovable-uploads/e540bb63-69bc-4af7-8d9e-888edd32bc63.png" 
-              alt="HR professionals collaborating" 
+              src="/lovable-uploads/e151690b-416e-441f-abad-6b3b50135447.png" 
+              alt="Modern recruitment platform interface" 
               className="w-full h-auto object-cover"
             />
             
@@ -98,9 +98,9 @@ const Hero = () => {
                 <div className="bg-blue-100 p-2 rounded-lg">
                   <Briefcase className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="font-semibold text-gray-900">Dual interfaces for both HR and candidates</h3>
+                <h3 className="font-semibold text-gray-900">Dual interfaces for HR and candidates</h3>
               </div>
-              <p className="text-sm text-gray-600">Optimized for each user's specific needs</p>
+              <p className="text-sm text-gray-600">Customized dashboard experience for each user type</p>
             </div>
           </div>
         </div>
