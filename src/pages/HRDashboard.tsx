@@ -5,10 +5,11 @@ import Footer from "@/components/layout/Footer";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart, LineChart, PieChart } from "@/components/ui/chart";
+import { ChartContainer } from "@/components/ui/chart";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Upload, Users, FileText, Clock, CheckCircle, Activity } from "lucide-react";
+import { BarChart, Bar, PieChart, Pie, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 const HRDashboard = () => {
   const { toast } = useToast();
@@ -20,6 +21,16 @@ const HRDashboard = () => {
       description: `Welcome to your HR dashboard, ${user?.name}!`,
     });
   }, []);
+
+  // Configure chart colors
+  const chartConfig = {
+    applications: { color: "hsl(var(--primary))" },
+    interviews: { color: "hsl(var(--primary) / 0.7)" },
+    hires: { color: "hsl(var(--primary) / 0.4)" },
+  };
+
+  // Colors for pie charts
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -69,15 +80,39 @@ const HRDashboard = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <PieChart 
-                      data={[
-                        { name: "Engineering", value: 35 },
-                        { name: "Marketing", value: 20 },
-                        { name: "Sales", value: 15 },
-                        { name: "Finance", value: 10 },
-                        { name: "HR", value: 5 }
-                      ]}
-                    />
+                    <ChartContainer config={chartConfig} className="h-80">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { name: "Engineering", value: 35 },
+                              { name: "Marketing", value: 20 },
+                              { name: "Sales", value: 15 },
+                              { name: "Finance", value: 10 },
+                              { name: "HR", value: 5 }
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          >
+                            {[
+                              { name: "Engineering", value: 35 },
+                              { name: "Marketing", value: 20 },
+                              { name: "Sales", value: 15 },
+                              { name: "Finance", value: 10 },
+                              { name: "HR", value: 5 }
+                            ].map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
                   </CardContent>
                 </Card>
                 
@@ -89,16 +124,27 @@ const HRDashboard = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <LineChart 
-                      data={[
-                        { name: "Jan", Applications: 24, Interviews: 18, Hires: 4 },
-                        { name: "Feb", Applications: 30, Interviews: 22, Hires: 5 },
-                        { name: "Mar", Applications: 35, Interviews: 25, Hires: 6 },
-                        { name: "Apr", Applications: 40, Interviews: 30, Hires: 7 },
-                        { name: "May", Applications: 45, Interviews: 35, Hires: 8 }
-                      ]}
-                      categories={["Applications", "Interviews", "Hires"]}
-                    />
+                    <ChartContainer config={chartConfig} className="h-80">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                          data={[
+                            { name: "Jan", Applications: 24, Interviews: 18, Hires: 4 },
+                            { name: "Feb", Applications: 30, Interviews: 22, Hires: 5 },
+                            { name: "Mar", Applications: 35, Interviews: 25, Hires: 6 },
+                            { name: "Apr", Applications: 40, Interviews: 30, Hires: 7 },
+                            { name: "May", Applications: 45, Interviews: 35, Hires: 8 }
+                          ]}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip />
+                          <Line type="monotone" dataKey="Applications" stroke={chartConfig.applications.color} strokeWidth={2} activeDot={{ r: 8 }} />
+                          <Line type="monotone" dataKey="Interviews" stroke={chartConfig.interviews.color} strokeWidth={2} />
+                          <Line type="monotone" dataKey="Hires" stroke={chartConfig.hires.color} strokeWidth={2} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
                   </CardContent>
                 </Card>
               </div>
@@ -235,15 +281,25 @@ const HRDashboard = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <BarChart 
-                      data={[
-                        { name: "Engineering", value: 32 },
-                        { name: "Marketing", value: 28 },
-                        { name: "Sales", value: 24 },
-                        { name: "Finance", value: 35 },
-                        { name: "HR", value: 30 }
-                      ]}
-                    />
+                    <ChartContainer config={chartConfig} className="h-80">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={[
+                            { name: "Engineering", value: 32 },
+                            { name: "Marketing", value: 28 },
+                            { name: "Sales", value: 24 },
+                            { name: "Finance", value: 35 },
+                            { name: "HR", value: 30 }
+                          ]}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip />
+                          <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
                   </CardContent>
                 </Card>
                 
@@ -255,15 +311,39 @@ const HRDashboard = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <PieChart 
-                      data={[
-                        { name: "LinkedIn", value: 45 },
-                        { name: "Company Website", value: 25 },
-                        { name: "Indeed", value: 15 },
-                        { name: "Referrals", value: 10 },
-                        { name: "Other", value: 5 }
-                      ]}
-                    />
+                    <ChartContainer config={chartConfig} className="h-80">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { name: "LinkedIn", value: 45 },
+                              { name: "Company Website", value: 25 },
+                              { name: "Indeed", value: 15 },
+                              { name: "Referrals", value: 10 },
+                              { name: "Other", value: 5 }
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          >
+                            {[
+                              { name: "LinkedIn", value: 45 },
+                              { name: "Company Website", value: 25 },
+                              { name: "Indeed", value: 15 },
+                              { name: "Referrals", value: 10 },
+                              { name: "Other", value: 5 }
+                            ].map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
                   </CardContent>
                 </Card>
               </div>
