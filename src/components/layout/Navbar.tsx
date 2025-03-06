@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Settings, Bell, FileText } from "lucide-react";
+import { Menu, X, User, LogOut, Settings, Bell, FileText, Calendar, PlusCircle, Briefcase, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -72,6 +72,20 @@ const Navbar = () => {
                   >
                     HR Dashboard
                   </Link>
+                  <Link
+                    to="/job-posting"
+                    className={`nav-link ${isActive("/job-posting") ? "text-primary" : ""}`}
+                  >
+                    <PlusCircle className="h-4 w-4 mr-1 inline" />
+                    Post Job
+                  </Link>
+                  <Link
+                    to="/interview-schedule"
+                    className={`nav-link ${isActive("/interview-schedule") ? "text-primary" : ""}`}
+                  >
+                    <Calendar className="h-4 w-4 mr-1 inline" />
+                    Interviews
+                  </Link>
                 </>
               ) : (
                 <>
@@ -112,6 +126,15 @@ const Navbar = () => {
                 </Link>
               </>
             )}
+            
+            {/* Job search - available for everyone */}
+            <Link
+              to="/dashboard"
+              className={`nav-link flex items-center ${isActive("/dashboard") ? "text-primary" : ""}`}
+            >
+              <Search className="h-4 w-4 mr-1" />
+              Find Jobs
+            </Link>
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
@@ -197,6 +220,22 @@ const Navbar = () => {
                     >
                       HR Dashboard
                     </Link>
+                    <Link
+                      to="/job-posting"
+                      className={`nav-link ${isActive("/job-posting") ? "text-primary" : ""}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <PlusCircle className="h-4 w-4 mr-1 inline" />
+                      Post Job
+                    </Link>
+                    <Link
+                      to="/interview-schedule"
+                      className={`nav-link ${isActive("/interview-schedule") ? "text-primary" : ""}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Calendar className="h-4 w-4 mr-1 inline" />
+                      Interviews
+                    </Link>
                   </>
                 ) : (
                   <>
@@ -242,6 +281,16 @@ const Navbar = () => {
                   </Link>
                 </>
               )}
+              
+              {/* Job search - available for everyone */}
+              <Link
+                to="/dashboard"
+                className={`nav-link flex items-center ${isActive("/dashboard") ? "text-primary" : ""}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Search className="h-4 w-4 mr-1" />
+                Find Jobs
+              </Link>
               
               {user && (
                 <Link

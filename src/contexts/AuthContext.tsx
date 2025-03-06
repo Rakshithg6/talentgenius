@@ -16,7 +16,7 @@ type User = {
 type AuthContextType = {
   user: User;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, name: string, password: string) => Promise<void>;
+  signup: (email: string, name: string, password: string, provider?: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 };
@@ -52,7 +52,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const isCompanyEmail = !email.endsWith("@gmail.com") && 
                             !email.endsWith("@yahoo.com") && 
                             !email.endsWith("@hotmail.com") &&
-                            !email.endsWith("@outlook.com");
+                            !email.endsWith("@outlook.com") &&
+                            email.includes("@");
                             
     return isCompanyEmail ? "hr" : "candidate";
   };
@@ -98,7 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signup = async (email: string, name: string, password: string) => {
+  const signup = async (email: string, name: string, password: string, provider?: string) => {
     setIsLoading(true);
     
     try {
@@ -107,6 +108,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Determine role based on email domain
       const role = determineUserRole(email);
+      
+      // For HR users, require company email
+      if (provider !== "google" && provider !== "linkedin" && role === "hr") {
+        const isCompanyEmail = !email.endsWith("@gmail.com") && 
+                               !email.endsWith("@yahoo.com") && 
+                               !email.endsWith("@hotmail.com") &&
+                               !email.endsWith("@outlook.com") &&
+                               email.includes("@");
+        
+        if (!isCompanyEmail) {
+          throw new Error("HR users must use a company email address");
+        }
+      }
       
       // Create mock user
       const mockUser = {
@@ -128,9 +142,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       navigate(role === "hr" ? "/hr-dashboard" : "/dashboard");
       
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Please check your information and try again.";
+      
       toast({
         title: "Signup failed",
-        description: "Please check your information and try again.",
+        description: errorMessage,
         variant: "destructive",
       });
       console.error("Signup error:", error);

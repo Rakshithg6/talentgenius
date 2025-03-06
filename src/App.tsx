@@ -11,6 +11,8 @@ import Index from "./pages/Index";
 import Upload from "./pages/Upload";
 import Dashboard from "./pages/Dashboard";
 import HRDashboard from "./pages/HRDashboard";
+import JobPosting from "./pages/JobPosting";
+import InterviewSchedule from "./pages/InterviewSchedule";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
@@ -56,6 +58,16 @@ const App = () => (
             <Route path="/hr-dashboard" element={
               <ProtectedRoute allowedRoles={["hr"]}>
                 <HRDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/job-posting" element={
+              <ProtectedRoute allowedRoles={["hr"]}>
+                <JobPosting />
+              </ProtectedRoute>
+            } />
+            <Route path="/interview-schedule" element={
+              <ProtectedRoute allowedRoles={["hr"]}>
+                <InterviewSchedule />
               </ProtectedRoute>
             } />
             
