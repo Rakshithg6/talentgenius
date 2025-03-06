@@ -1,100 +1,72 @@
 
-import React, { useState } from "react";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import { useToast } from "@/components/ui/use-toast";
-import JobSearch from "@/components/jobs/JobSearch";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, MapPin, Building, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { Briefcase, FileCheck, Search, Filter, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { jobData } from "@/data/jobData";
+import JobCard from "@/components/jobs/JobCard";
+import JobSearch from "@/components/jobs/JobSearch";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 
-// Mock job data
-const jobListings = [
-  {
-    id: 1,
-    title: "Software Engineer",
-    company: "TechCorp",
-    location: "Bangalore, India",
-    type: "Full-time",
-    postedAt: "2 days ago",
-    skills: ["React", "Node.js", "TypeScript"],
-    salary: "₹15L - ₹25L"
-  },
-  {
-    id: 2,
-    title: "Frontend Developer",
-    company: "WebInnovate",
-    location: "Bangalore, India (Remote)",
-    type: "Full-time",
-    postedAt: "1 week ago",
-    skills: ["JavaScript", "React", "CSS"],
-    salary: "₹12L - ₹18L"
-  },
-  {
-    id: 3,
-    title: "Backend Engineer",
-    company: "DataSystems",
-    location: "Bangalore, India",
-    type: "Contract",
-    postedAt: "3 days ago",
-    skills: ["Java", "Spring Boot", "MySQL"],
-    salary: "₹18L - ₹30L"
-  },
-  {
-    id: 4,
-    title: "Full Stack Developer",
-    company: "AppWorks",
-    location: "Bangalore, India (Hybrid)",
-    type: "Full-time",
-    postedAt: "Just now",
-    skills: ["React", "Node.js", "MongoDB"],
-    salary: "₹20L - ₹35L"
-  }
-];
+// Define the job type
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  salary: string;
+  description: string;
+  requirements: string[];
+  posted: string;
+  type: string;
+  tags: string[];
+  status?: string;
+}
 
-const Dashboard = () => {
-  const { toast } = useToast();
+const fetchJobs = async (): Promise<Job[]> => {
+  // This would normally be an API call
+  return jobData;
+};
+
+export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredJobs, setFilteredJobs] = useState(jobListings);
-
-  React.useEffect(() => {
-    toast({
-      title: "Dashboard loaded",
-      description: "Welcome to your TalentGenius dashboard!",
-    });
-  }, []);
-
-  // Handle search
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
+  
+  const { data: jobs = [], isLoading, error } = useQuery({
+    queryKey: ["jobs"],
+    queryFn: fetchJobs,
+  });
+  
+  useEffect(() => {
+    if (jobs.length > 0) {
+      const filtered = jobs.filter(job => 
+        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredJobs(filtered);
+    }
+  }, [searchQuery, jobs]);
+  
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (!query) {
-      setFilteredJobs(jobListings);
-      return;
-    }
-    
-    const filtered = jobListings.filter(job => {
-      const lowerQuery = query.toLowerCase();
-      return (
-        job.title.toLowerCase().includes(lowerQuery) ||
-        job.company.toLowerCase().includes(lowerQuery) ||
-        job.location.toLowerCase().includes(lowerQuery) ||
-        job.skills.some(skill => skill.toLowerCase().includes(lowerQuery))
-      );
-    });
-    
-    setFilteredJobs(filtered);
   };
-
-  // Handle apply to job
-  const handleApply = (jobId: number) => {
+  
+  const handleApply = (jobId: string) => {
     if (!user) {
       toast({
         title: "Authentication required",
-        description: "Please log in or sign up to apply for jobs.",
+        description: "Please login to apply for jobs",
         variant: "destructive",
       });
       navigate("/login");
@@ -103,139 +75,136 @@ const Dashboard = () => {
     
     toast({
       title: "Application submitted",
-      description: "Your application has been sent to the employer.",
+      description: "Your application has been successfully submitted",
     });
+    
+    // In a real app, you would submit the application to the server
+    console.log(`Applied for job ${jobId}`);
   };
-
+  
+  const applicationStats = {
+    applied: 4,
+    interviews: 2,
+    offers: 1,
+  };
+  
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-      
-      <main className="flex-grow page-container py-32">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-12">
-            <h1 className="text-3xl md:text-4xl font-bold mb-6">
-              {user ? "Your Dashboard" : "Job Search"}
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              {user 
-                ? "Find opportunities that match your skills and experience." 
-                : "Discover job opportunities in your field."}
-            </p>
-            
-            <JobSearch 
-              className="mb-12" 
-              onSearch={handleSearch}
-              defaultValue={searchQuery}
-            />
-          </div>
-          
-          {user && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              <div className="glass-card rounded-xl p-6 text-center">
-                <h3 className="font-medium text-xl mb-3">Resumes Analyzed</h3>
-                <p className="text-3xl font-bold text-primary">0</p>
-              </div>
-              
-              <div className="glass-card rounded-xl p-6 text-center">
-                <h3 className="font-medium text-xl mb-3">Job Matches</h3>
-                <p className="text-3xl font-bold text-primary">0</p>
-              </div>
-              
-              <div className="glass-card rounded-xl p-6 text-center">
-                <h3 className="font-medium text-xl mb-3">Interview Questions</h3>
-                <p className="text-3xl font-bold text-primary">0</p>
-              </div>
-            </div>
-          )}
-          
-          <div className="mb-12">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {searchQuery 
-                    ? `Jobs matching "${searchQuery}"`
-                    : "Recent Job Listings"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {filteredJobs.length > 0 ? (
-                  <div className="space-y-6">
-                    {filteredJobs.map((job) => (
-                      <div key={job.id} className="border p-6 rounded-lg hover:shadow-md transition-shadow">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                          <div>
-                            <h3 className="text-xl font-semibold">{job.title}</h3>
-                            <div className="flex flex-wrap gap-x-4 gap-y-2 mt-2">
-                              <div className="flex items-center text-muted-foreground">
-                                <Building className="h-4 w-4 mr-1" />
-                                {job.company}
-                              </div>
-                              <div className="flex items-center text-muted-foreground">
-                                <MapPin className="h-4 w-4 mr-1" />
-                                {job.location}
-                              </div>
-                              <div className="flex items-center text-muted-foreground">
-                                <Briefcase className="h-4 w-4 mr-1" />
-                                {job.type}
-                              </div>
-                              <div className="flex items-center text-muted-foreground">
-                                <Clock className="h-4 w-4 mr-1" />
-                                {job.postedAt}
-                              </div>
-                            </div>
-                            <div className="mt-3">
-                              <p className="font-medium">Skills:</p>
-                              <div className="flex flex-wrap gap-2 mt-1">
-                                {job.skills.map((skill, index) => (
-                                  <span 
-                                    key={index} 
-                                    className="bg-primary/10 text-primary px-2 py-1 rounded-full text-sm"
-                                  >
-                                    {skill}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                            <p className="mt-3 text-sm font-medium">Salary: {job.salary}</p>
-                          </div>
-                          
-                          <div className="md:self-center">
-                            <Button onClick={() => handleApply(job.id)}>
-                              Apply Now
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <p className="text-muted-foreground">No jobs found matching your search criteria.</p>
-                    <Button variant="outline" className="mt-4" onClick={() => handleSearch("")}>
-                      View All Jobs
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-          
-          {user && (
-            <div className="glass-card rounded-xl p-8 mb-12">
-              <h2 className="text-2xl font-bold mb-6">Recent Activity</h2>
-              <div className="text-center py-16">
-                <p className="text-muted-foreground">No recent activity to display.</p>
-                <p className="text-muted-foreground mt-2">Upload your first resume to get started!</p>
-              </div>
-            </div>
-          )}
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Job Dashboard</h1>
+          <p className="text-muted-foreground">Find and apply for jobs that match your skills</p>
         </div>
-      </main>
+        
+        <div className="flex items-center gap-2">
+          <Button onClick={() => navigate('/resume-builder')} className="flex items-center gap-2">
+            <FileCheck className="h-4 w-4" />
+            Update Resume
+          </Button>
+        </div>
+      </div>
       
-      <Footer />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <Briefcase className="h-4 w-4 text-primary" />
+              Applications
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{applicationStats.applied}</div>
+            <p className="text-sm text-muted-foreground">Jobs applied</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <Clock className="h-4 w-4 text-amber-500" />
+              Interviews
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{applicationStats.interviews}</div>
+            <p className="text-sm text-muted-foreground">Upcoming interviews</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <FileCheck className="h-4 w-4 text-green-500" />
+              Offers
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{applicationStats.offers}</div>
+            <p className="text-sm text-muted-foreground">Received offers</p>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div className="mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+          <h2 className="text-2xl font-bold">Find Jobs</h2>
+          <div className="flex items-center gap-2">
+            <JobSearch onSearchChange={handleSearch} defaultValue={searchQuery} />
+            <Button variant="outline" size="icon">
+              <Filter className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        
+        <Tabs defaultValue="all">
+          <TabsList className="mb-4">
+            <TabsTrigger value="all">All Jobs</TabsTrigger>
+            <TabsTrigger value="recommended">Recommended</TabsTrigger>
+            <TabsTrigger value="saved">Saved</TabsTrigger>
+            <TabsTrigger value="applied">Applied</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="all" className="mt-0">
+            {isLoading ? (
+              <div className="text-center py-12">Loading jobs...</div>
+            ) : error ? (
+              <div className="text-center py-12 text-red-500">Error loading jobs</div>
+            ) : filteredJobs.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">No jobs found matching your search criteria</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredJobs.map(job => (
+                  <JobCard 
+                    key={job.id} 
+                    job={job} 
+                    onApply={() => handleApply(job.id)} 
+                  />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="recommended" className="mt-0">
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Personalized job recommendations coming soon</p>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="saved" className="mt-0">
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">You haven't saved any jobs yet</p>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="applied" className="mt-0">
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Your applied jobs will appear here</p>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
-};
-
-export default Dashboard;
+}
