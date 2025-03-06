@@ -8,28 +8,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { jobData } from "@/data/jobData";
+import { jobData, JobData } from "@/data/jobData";
 import JobCard from "@/components/jobs/JobCard";
 import JobSearch from "@/components/jobs/JobSearch";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 
-// Define the job type
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  salary: string;
-  description: string;
-  requirements: string[];
-  posted: string;
-  type: string;
-  tags: string[];
-  status?: string;
-}
+// We'll use the JobData interface directly from the imported file
+// instead of defining a separate Job interface
 
-const fetchJobs = async (): Promise<Job[]> => {
+const fetchJobs = async (): Promise<JobData[]> => {
   // This would normally be an API call
   return jobData;
 };
@@ -39,7 +27,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<JobData[]>([]);
   
   const { data: jobs = [], isLoading, error } = useQuery({
     queryKey: ["jobs"],
@@ -149,7 +137,7 @@ export default function Dashboard() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
           <h2 className="text-2xl font-bold">Find Jobs</h2>
           <div className="flex items-center gap-2">
-            <JobSearch onSearchChange={handleSearch} defaultValue={searchQuery} />
+            <JobSearch searchTerm={searchQuery} onSearch={handleSearch} />
             <Button variant="outline" size="icon">
               <Filter className="h-4 w-4" />
             </Button>

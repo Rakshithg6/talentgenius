@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -8,19 +8,31 @@ import { jobData } from '@/data/jobData';
 
 type JobSearchProps = {
   className?: string;
+  searchTerm?: string;
+  onSearch?: (term: string) => void;
 }
 
-const JobSearch = ({ className }: JobSearchProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const JobSearch = ({ className, searchTerm = '', onSearch }: JobSearchProps) => {
+  const [searchTermLocal, setSearchTermLocal] = useState(searchTerm);
   const [location, setLocation] = useState('');
   const [searchResults, setSearchResults] = useState<typeof jobData>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  
+  // Update local state when prop changes
+  useEffect(() => {
+    setSearchTermLocal(searchTerm);
+  }, [searchTerm]);
 
   const handleSearch = () => {
+    // Call the parent's onSearch if provided
+    if (onSearch) {
+      onSearch(searchTermLocal);
+    }
+    
     // Filter jobs based on search term and location
     const results = jobData.filter(job => {
-      const matchesTitle = job.title.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCompany = job.company.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesTitle = job.title.toLowerCase().includes(searchTermLocal.toLowerCase());
+      const matchesCompany = job.company.toLowerCase().includes(searchTermLocal.toLowerCase());
       const matchesLocation = location === '' || job.location.toLowerCase().includes(location.toLowerCase());
       return (matchesTitle || matchesCompany) && matchesLocation;
     });
@@ -38,8 +50,8 @@ const JobSearch = ({ className }: JobSearchProps) => {
             <Input
               type="text"
               placeholder="Job title or keyword"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchTermLocal}
+              onChange={(e) => setSearchTermLocal(e.target.value)}
               className="w-full"
             />
           </div>
@@ -64,7 +76,7 @@ const JobSearch = ({ className }: JobSearchProps) => {
         </div>
       </div>
 
-      {hasSearched && (
+      {hasSearched && !onSearch && (
         <div className="mb-10">
           <h3 className="text-xl font-semibold mb-4">
             {searchResults.length} {searchResults.length === 1 ? 'Job' : 'Jobs'} Found
