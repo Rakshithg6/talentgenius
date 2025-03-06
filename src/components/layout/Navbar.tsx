@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Settings, Bell } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -114,10 +114,15 @@ const Navbar = () => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <User className="h-4 w-4 mr-2" />
-                    Profile
+                  <DropdownMenuItem onClick={() => navigate("/settings")}>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Settings
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/settings?tab=notifications")}>
+                    <Bell className="h-4 w-4 mr-2" />
+                    Notifications
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout}>
                     <LogOut className="h-4 w-4 mr-2" />
                     Log out
@@ -207,6 +212,16 @@ const Navbar = () => {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Resume Upload
+                </Link>
+              )}
+              
+              {user && (
+                <Link
+                  to="/settings"
+                  className={`nav-link ${isActive("/settings") ? "text-primary" : ""}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Settings
                 </Link>
               )}
               

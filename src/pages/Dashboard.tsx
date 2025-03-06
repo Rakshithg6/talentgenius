@@ -3,6 +3,7 @@ import React from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useToast } from "@/components/ui/use-toast";
+import JobSearch from "@/components/jobs/JobSearch";
 
 const Dashboard = () => {
   const { toast } = useToast();
@@ -26,6 +27,8 @@ const Dashboard = () => {
           <p className="text-xl text-muted-foreground mb-12">
             Welcome to your TalentGenius dashboard. This is where you'll find all your resume analytics and job matching results.
           </p>
+          
+          <JobSearch className="mb-12" />
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div className="glass-card rounded-xl p-6 text-center">

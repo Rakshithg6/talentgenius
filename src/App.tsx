@@ -13,6 +13,8 @@ import Dashboard from "./pages/Dashboard";
 import HRDashboard from "./pages/HRDashboard";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import Settings from "./pages/Settings";
+import Chatbot from "./components/chat/Chatbot";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,11 @@ const App = () => (
                 <Dashboard />
               </ProtectedRoute>
             } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            } />
             
             {/* Protected HR routes */}
             <Route path="/hr-dashboard" element={
@@ -49,6 +56,9 @@ const App = () => (
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          
+          {/* Global Chatbot */}
+          <Chatbot />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
