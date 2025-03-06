@@ -14,6 +14,7 @@ import HRDashboard from "./pages/HRDashboard";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
+import ResumeBuilder from "./pages/ResumeBuilder";
 import Chatbot from "./components/chat/Chatbot";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,11 @@ const App = () => (
             <Route path="/dashboard" element={
               <ProtectedRoute allowedRoles={["candidate"]}>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/resume-builder" element={
+              <ProtectedRoute allowedRoles={["candidate"]}>
+                <ResumeBuilder />
               </ProtectedRoute>
             } />
             <Route path="/settings" element={

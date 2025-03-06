@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Settings, Bell } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { Menu, X, User, LogOut, Settings, Bell, FileText } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
@@ -82,6 +82,12 @@ const Navbar = () => {
                     Resume Upload
                   </Link>
                   <Link
+                    to="/resume-builder"
+                    className={`nav-link ${isActive("/resume-builder") ? "text-primary" : ""}`}
+                  >
+                    Resume Builder
+                  </Link>
+                  <Link
                     to="/dashboard"
                     className={`nav-link ${isActive("/dashboard") ? "text-primary" : ""}`}
                   >
@@ -97,6 +103,12 @@ const Navbar = () => {
                   className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
                 >
                   Resume Upload
+                </Link>
+                <Link
+                  to="/resume-builder"
+                  className={`nav-link ${isActive("/resume-builder") ? "text-primary" : ""}`}
+                >
+                  Resume Builder
                 </Link>
               </>
             )}
@@ -196,6 +208,13 @@ const Navbar = () => {
                       Resume Upload
                     </Link>
                     <Link
+                      to="/resume-builder"
+                      className={`nav-link ${isActive("/resume-builder") ? "text-primary" : ""}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Resume Builder
+                    </Link>
+                    <Link
                       to="/dashboard"
                       className={`nav-link ${isActive("/dashboard") ? "text-primary" : ""}`}
                       onClick={() => setMobileMenuOpen(false)}
@@ -206,13 +225,22 @@ const Navbar = () => {
                 )
               ) : (
                 // Options for not logged in users
-                <Link
-                  to="/upload"
-                  className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Resume Upload
-                </Link>
+                <>
+                  <Link
+                    to="/upload"
+                    className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Resume Upload
+                  </Link>
+                  <Link
+                    to="/resume-builder"
+                    className={`nav-link ${isActive("/resume-builder") ? "text-primary" : ""}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Resume Builder
+                  </Link>
+                </>
               )}
               
               {user && (
