@@ -8,9 +8,10 @@ import { JobData } from '@/data/jobData';
 
 type JobCardProps = {
   job: JobData;
+  onApply?: () => void;
 }
 
-const JobCard = ({ job }: JobCardProps) => {
+const JobCard = ({ job, onApply }: JobCardProps) => {
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <CardContent className="p-6">
@@ -70,7 +71,7 @@ const JobCard = ({ job }: JobCardProps) => {
       
       <CardFooter className="bg-muted/20 px-6 py-4 flex justify-between">
         <Button variant="outline">Save Job</Button>
-        <Button>Apply Now</Button>
+        <Button onClick={onApply}>Apply Now</Button>
       </CardFooter>
     </Card>
   );
