@@ -26,27 +26,11 @@ const Hero = () => {
     <section className="relative pt-20 pb-16 overflow-hidden">
       <div className="page-container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8 max-w-xl">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                  Smart Recruitment
-                  <span className="block mt-2 text-primary">Platform</span>
-                </h1>
-              </div>
-              <div className="hidden md:block">
-                <div className="relative w-32 h-32">
-                  <img 
-                    src="/lovable-uploads/5b751f7b-65c8-4d9b-8d40-d7e05ac9c35f.png" 
-                    alt="Recruitment platform" 
-                    className="w-full h-full object-cover rounded-lg shadow-lg border-2 border-primary"
-                  />
-                  <div className="absolute -bottom-2 -right-2 bg-white text-xs px-2 py-1 rounded-full border border-primary text-primary font-medium">
-                    Dual interface
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="space-y-8">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              Smart Recruitment
+              <span className="block mt-2 text-primary">Platform</span>
+            </h1>
             
             <p className="text-xl text-muted-foreground">
               A modern, intuitive recruitment platform with separate interfaces for 
@@ -74,7 +58,7 @@ const Hero = () => {
               </Button>
             </div>
             
-            <div className="grid grid-cols-2 gap-6 pt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <svg className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -109,12 +93,12 @@ const Hero = () => {
               className="w-full h-auto object-cover"
             />
             
-            <div className="absolute bottom-6 right-6 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg max-w-xs">
+            <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
               <div className="flex items-center gap-3 mb-2">
                 <div className="bg-blue-100 p-2 rounded-lg">
                   <Briefcase className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="font-semibold text-gray-900">Dual interfaces for HR and candidates</h3>
+                <h3 className="font-semibold text-gray-900">Dual interfaces for both HR and candidates</h3>
               </div>
               <p className="text-sm text-gray-600">Optimized for each user's specific needs</p>
             </div>
