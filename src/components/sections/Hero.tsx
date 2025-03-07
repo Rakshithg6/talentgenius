@@ -27,10 +27,26 @@ const Hero = () => {
       <div className="page-container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 max-w-xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Smart Recruitment
-              <span className="block mt-2 text-primary">Platform</span>
-            </h1>
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                  Smart Recruitment
+                  <span className="block mt-2 text-primary">Platform</span>
+                </h1>
+              </div>
+              <div className="hidden md:block">
+                <div className="relative w-32 h-32">
+                  <img 
+                    src="/lovable-uploads/5b751f7b-65c8-4d9b-8d40-d7e05ac9c35f.png" 
+                    alt="Recruitment platform" 
+                    className="w-full h-full object-cover rounded-lg shadow-lg border-2 border-primary"
+                  />
+                  <div className="absolute -bottom-2 -right-2 bg-white text-xs px-2 py-1 rounded-full border border-primary text-primary font-medium">
+                    Dual interface
+                  </div>
+                </div>
+              </div>
+            </div>
             
             <p className="text-xl text-muted-foreground">
               A modern, intuitive recruitment platform with separate interfaces for 
