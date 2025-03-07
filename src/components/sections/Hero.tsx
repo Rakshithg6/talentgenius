@@ -27,17 +27,10 @@ const Hero = () => {
       <div className="page-container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 max-w-xl">
-            <div className="flex flex-col md:flex-row md:items-end gap-6">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Smart Recruitment
-                <span className="block mt-2 text-primary">Platform</span>
-              </h1>
-              <img 
-                src="/lovable-uploads/4ce23228-69f8-4b69-a802-b25811ef7607.png" 
-                alt="Professional recruitment meeting" 
-                className="w-32 h-32 rounded-full shadow-lg border-4 border-white hidden md:block"
-              />
-            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              Smart Recruitment
+              <span className="block mt-2 text-primary">Platform</span>
+            </h1>
             
             <p className="text-xl text-muted-foreground">
               A modern, intuitive recruitment platform with separate interfaces for 
@@ -95,8 +88,8 @@ const Hero = () => {
           
           <div className="relative rounded-xl overflow-hidden shadow-xl">
             <img 
-              src="/lovable-uploads/e151690b-416e-441f-abad-6b3b50135447.png" 
-              alt="Modern recruitment platform interface" 
+              src="/lovable-uploads/5b751f7b-65c8-4d9b-8d40-d7e05ac9c35f.png" 
+              alt="Professional recruitment team meeting" 
               className="w-full h-auto object-cover"
             />
             
@@ -107,7 +100,7 @@ const Hero = () => {
                 </div>
                 <h3 className="font-semibold text-gray-900">Dual interfaces for HR and candidates</h3>
               </div>
-              <p className="text-sm text-gray-600">Customized dashboard experience for each user type</p>
+              <p className="text-sm text-gray-600">Optimized for each user's specific needs</p>
             </div>
           </div>
         </div>
