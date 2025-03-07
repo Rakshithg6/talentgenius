@@ -55,13 +55,6 @@ const Navbar = () => {
 
           {/* Desktop menu */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/"
-              className={`nav-link ${isActive("/") ? "text-primary" : ""}`}
-            >
-              Home
-            </Link>
-            
             {user ? (
               // Show different menu items based on user role
               user.role === "hr" ? (
@@ -90,6 +83,12 @@ const Navbar = () => {
               ) : (
                 <>
                   <Link
+                    to="/"
+                    className={`nav-link ${isActive("/") ? "text-primary" : ""}`}
+                  >
+                    Home
+                  </Link>
+                  <Link
                     to="/upload"
                     className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
                   >
@@ -112,6 +111,12 @@ const Navbar = () => {
             ) : (
               // Options for not logged in users
               <>
+                <Link
+                  to="/"
+                  className={`nav-link ${isActive("/") ? "text-primary" : ""}`}
+                >
+                  Home
+                </Link>
                 <Link
                   to="/upload"
                   className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
@@ -201,14 +206,6 @@ const Navbar = () => {
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 animate-fade-down">
             <nav className="flex flex-col space-y-4">
-              <Link
-                to="/"
-                className={`nav-link ${isActive("/") ? "text-primary" : ""}`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Home
-              </Link>
-              
               {user ? (
                 // Show different menu items based on user role
                 user.role === "hr" ? (
@@ -240,6 +237,13 @@ const Navbar = () => {
                 ) : (
                   <>
                     <Link
+                      to="/"
+                      className={`nav-link ${isActive("/") ? "text-primary" : ""}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Home
+                    </Link>
+                    <Link
                       to="/upload"
                       className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
                       onClick={() => setMobileMenuOpen(false)}
@@ -265,6 +269,13 @@ const Navbar = () => {
               ) : (
                 // Options for not logged in users
                 <>
+                  <Link
+                    to="/"
+                    className={`nav-link ${isActive("/") ? "text-primary" : ""}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Home
+                  </Link>
                   <Link
                     to="/upload"
                     className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
