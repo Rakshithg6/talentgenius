@@ -19,7 +19,12 @@ const Hero = () => {
   };
 
   const handleGetStarted = () => {
-    navigate(user ? (user.role === "hr" ? "/hr-dashboard" : "/dashboard") : "/upload");
+    if (user) {
+      navigate(user.role === "hr" ? "/hr-dashboard" : "/dashboard");
+    } else {
+      // For non-logged in users, send them to upload page as candidates
+      navigate("/login", { state: { userType: "candidate", directLogin: true } });
+    }
   };
 
   return (

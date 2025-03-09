@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -14,11 +13,7 @@ import JobSearch from "@/components/jobs/JobSearch";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 
-// We'll use the JobData interface directly from the imported file
-// instead of defining a separate Job interface
-
 const fetchJobs = async (): Promise<JobData[]> => {
-  // This would normally be an API call
   return jobData;
 };
 
@@ -57,7 +52,7 @@ export default function Dashboard() {
         description: "Please login to apply for jobs",
         variant: "destructive",
       });
-      navigate("/login");
+      navigate("/login", { state: { userType: "candidate", directLogin: true } });
       return;
     }
     
@@ -66,8 +61,15 @@ export default function Dashboard() {
       description: "Your application has been successfully submitted",
     });
     
-    // In a real app, you would submit the application to the server
     console.log(`Applied for job ${jobId}`);
+  };
+  
+  const handleResumeBuilder = () => {
+    if (!user) {
+      navigate("/login", { state: { userType: "candidate", directLogin: true } });
+      return;
+    }
+    navigate('/resume-builder');
   };
   
   const applicationStats = {
@@ -85,7 +87,7 @@ export default function Dashboard() {
         </div>
         
         <div className="flex items-center gap-2">
-          <Button onClick={() => navigate('/resume-builder')} className="flex items-center gap-2">
+          <Button onClick={handleResumeBuilder} className="flex items-center gap-2">
             <FileCheck className="h-4 w-4" />
             Update Resume
           </Button>

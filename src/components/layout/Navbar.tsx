@@ -36,6 +36,15 @@ const Navbar = () => {
   const handleLoginClick = () => {
     navigate("/login");
   };
+  
+  // New function to handle candidate-specific navigation
+  const handleCandidatePageNavigation = (path: string) => {
+    if (user) {
+      navigate(path);
+    } else {
+      navigate("/login", { state: { userType: "candidate", directLogin: true } });
+    }
+  };
 
   return (
     <header
@@ -117,29 +126,29 @@ const Navbar = () => {
                 >
                   Home
                 </Link>
-                <Link
-                  to="/upload"
+                <button
+                  onClick={() => handleCandidatePageNavigation("/upload")}
                   className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
                 >
                   Resume Upload
-                </Link>
-                <Link
-                  to="/resume-builder"
+                </button>
+                <button
+                  onClick={() => handleCandidatePageNavigation("/resume-builder")}
                   className={`nav-link ${isActive("/resume-builder") ? "text-primary" : ""}`}
                 >
                   Resume Builder
-                </Link>
+                </button>
               </>
             )}
             
             {/* Job search - available for everyone */}
-            <Link
-              to="/dashboard"
+            <button
+              onClick={() => handleCandidatePageNavigation("/dashboard")}
               className={`nav-link flex items-center ${isActive("/dashboard") ? "text-primary" : ""}`}
             >
               <Search className="h-4 w-4 mr-1" />
               Find Jobs
-            </Link>
+            </button>
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
@@ -276,32 +285,38 @@ const Navbar = () => {
                   >
                     Home
                   </Link>
-                  <Link
-                    to="/upload"
-                    className={`nav-link ${isActive("/upload") ? "text-primary" : ""}`}
-                    onClick={() => setMobileMenuOpen(false)}
+                  <button
+                    className={`nav-link text-left ${isActive("/upload") ? "text-primary" : ""}`}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleCandidatePageNavigation("/upload");
+                    }}
                   >
                     Resume Upload
-                  </Link>
-                  <Link
-                    to="/resume-builder"
-                    className={`nav-link ${isActive("/resume-builder") ? "text-primary" : ""}`}
-                    onClick={() => setMobileMenuOpen(false)}
+                  </button>
+                  <button
+                    className={`nav-link text-left ${isActive("/resume-builder") ? "text-primary" : ""}`}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleCandidatePageNavigation("/resume-builder");
+                    }}
                   >
                     Resume Builder
-                  </Link>
+                  </button>
                 </>
               )}
               
               {/* Job search - available for everyone */}
-              <Link
-                to="/dashboard"
-                className={`nav-link flex items-center ${isActive("/dashboard") ? "text-primary" : ""}`}
-                onClick={() => setMobileMenuOpen(false)}
+              <button
+                className={`nav-link flex items-center text-left ${isActive("/dashboard") ? "text-primary" : ""}`}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleCandidatePageNavigation("/dashboard");
+                }}
               >
                 <Search className="h-4 w-4 mr-1" />
                 Find Jobs
-              </Link>
+              </button>
               
               {user && (
                 <Link
