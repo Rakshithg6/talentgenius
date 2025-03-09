@@ -53,8 +53,9 @@ const Login = () => {
   const tabParam = queryParams.get("tab");
   
   // Get user type from location state if available
-  const locationState = location.state as { userType?: UserRole } | null;
+  const locationState = location.state as { userType?: UserRole, directLogin?: boolean } | null;
   const initialUserType = locationState?.userType || "candidate";
+  const directLogin = locationState?.directLogin || false;
   
   const [activeTab, setActiveTab] = useState<string>("login");
   const [selectedRole, setSelectedRole] = useState<UserRole>(initialUserType);
@@ -177,24 +178,26 @@ const Login = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="mb-4">
-                      <Label className="text-base">I am a:</Label>
-                      <RadioGroup 
-                        defaultValue={selectedRole} 
-                        value={selectedRole}
-                        className="grid grid-cols-2 gap-4 mt-2"
-                        onValueChange={value => setSelectedRole(value as UserRole)}
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="candidate" id="login-candidate" />
-                          <Label htmlFor="login-candidate">Job Seeker</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="hr" id="login-hr" />
-                          <Label htmlFor="login-hr">HR Professional</Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
+                    {!directLogin && (
+                      <div className="mb-4">
+                        <Label className="text-base">I am a:</Label>
+                        <RadioGroup 
+                          defaultValue={selectedRole} 
+                          value={selectedRole}
+                          className="grid grid-cols-2 gap-4 mt-2"
+                          onValueChange={value => setSelectedRole(value as UserRole)}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="candidate" id="login-candidate" />
+                            <Label htmlFor="login-candidate">Job Seeker</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="hr" id="login-hr" />
+                            <Label htmlFor="login-hr">HR Professional</Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                    )}
                     
                     <Form {...loginForm}>
                       <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
@@ -310,24 +313,26 @@ const Login = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="mb-4">
-                      <Label className="text-base">I am a:</Label>
-                      <RadioGroup 
-                        defaultValue={selectedRole} 
-                        value={selectedRole}
-                        className="grid grid-cols-2 gap-4 mt-2"
-                        onValueChange={handleRoleChange}
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="candidate" id="signup-candidate" />
-                          <Label htmlFor="signup-candidate">Job Seeker</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="hr" id="signup-hr" />
-                          <Label htmlFor="signup-hr">HR Professional</Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
+                    {!directLogin && (
+                      <div className="mb-4">
+                        <Label className="text-base">I am a:</Label>
+                        <RadioGroup 
+                          defaultValue={selectedRole} 
+                          value={selectedRole}
+                          className="grid grid-cols-2 gap-4 mt-2"
+                          onValueChange={handleRoleChange}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="candidate" id="signup-candidate" />
+                            <Label htmlFor="signup-candidate">Job Seeker</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="hr" id="signup-hr" />
+                            <Label htmlFor="signup-hr">HR Professional</Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                    )}
                     
                     {showOAuthOptions && (
                       <>

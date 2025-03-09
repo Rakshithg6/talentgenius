@@ -11,11 +11,11 @@ const Hero = () => {
   const { user } = useAuth();
 
   const handleHRLogin = () => {
-    navigate("/login", { state: { userType: "hr" } });
+    navigate("/login", { state: { userType: "hr", directLogin: true } });
   };
 
   const handleCandidatePortal = () => {
-    navigate("/login", { state: { userType: "candidate" } });
+    navigate("/login", { state: { userType: "candidate", directLogin: true } });
   };
 
   const handleGetStarted = () => {
