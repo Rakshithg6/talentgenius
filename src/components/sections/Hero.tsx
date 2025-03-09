@@ -43,7 +43,7 @@ const Hero = () => {
                 onClick={handleHRLogin}
               >
                 <Briefcase className="h-5 w-5" />
-                HR Professional Login
+                HR Portal
                 <ArrowRight className="h-4 w-4" />
               </Button>
               
