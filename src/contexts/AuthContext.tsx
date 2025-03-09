@@ -16,9 +16,10 @@ type User = {
 type AuthContextType = {
   user: User;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, name: string, password: string, provider?: string) => Promise<void>;
+  signup: (email: string, name: string, password: string, role?: UserRole) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
+  validateEmail: (email: string, forRole?: UserRole) => { valid: boolean; message?: string };
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -45,27 +46,63 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  // Personal email domains that are not allowed for HR professionals
+  const personalEmailDomains = [
+    "@gmail.com", 
+    "@yahoo.com", 
+    "@hotmail.com", 
+    "@outlook.com",
+    "@aol.com",
+    "@icloud.com",
+    "@me.com",
+    "@mail.com",
+    "@protonmail.com",
+    "@zoho.com"
+  ];
+
+  // Determine if email is a company email
+  const isCompanyEmail = (email: string): boolean => {
+    return !personalEmailDomains.some(domain => email.toLowerCase().endsWith(domain)) && email.includes("@");
+  };
+
   // Determine user role based on email domain
   const determineUserRole = (email: string): UserRole => {
-    // Company domains typically end with company name
-    // This is a simple check - in production, you'd have a list of allowed company domains
-    const isCompanyEmail = !email.endsWith("@gmail.com") && 
-                            !email.endsWith("@yahoo.com") && 
-                            !email.endsWith("@hotmail.com") &&
-                            !email.endsWith("@outlook.com") &&
-                            email.includes("@");
-                            
-    return isCompanyEmail ? "hr" : "candidate";
+    return isCompanyEmail(email) ? "hr" : "candidate";
+  };
+
+  // Email validation function
+  const validateEmail = (email: string, forRole?: UserRole): { valid: boolean; message?: string } => {
+    if (!email || !email.includes('@')) {
+      return { valid: false, message: "Please enter a valid email address" };
+    }
+
+    // If role is explicitly HR, validate it's a company email
+    if (forRole === "hr") {
+      if (!isCompanyEmail(email)) {
+        return { 
+          valid: false, 
+          message: "HR professionals must use a company email (not gmail, yahoo, outlook, etc.)" 
+        };
+      }
+    }
+
+    return { valid: true };
   };
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     
     try {
+      // Check if the email is valid
+      const emailValidation = validateEmail(email);
+      if (!emailValidation.valid) {
+        throw new Error(emailValidation.message);
+      }
+      
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // In a real app, this would be an API call to verify credentials
+      // Determine role based on email domain
       const role = determineUserRole(email);
       
       // Create mock user
@@ -90,7 +127,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       toast({
         title: "Login failed",
-        description: "Please check your credentials and try again.",
+        description: error instanceof Error ? error.message : "Please check your credentials and try again.",
         variant: "destructive",
       });
       console.error("Login error:", error);
@@ -99,27 +136,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signup = async (email: string, name: string, password: string, provider?: string) => {
+  const signup = async (email: string, name: string, password: string, role?: UserRole) => {
     setIsLoading(true);
     
     try {
+      // Validate the email based on role or determined role
+      const determineRole = role || determineUserRole(email);
+      const emailValidation = validateEmail(email, determineRole);
+      
+      if (!emailValidation.valid) {
+        throw new Error(emailValidation.message);
+      }
+      
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Determine role based on email domain
-      const role = determineUserRole(email);
-      
       // For HR users, require company email
-      if (provider !== "google" && provider !== "linkedin" && role === "hr") {
-        const isCompanyEmail = !email.endsWith("@gmail.com") && 
-                               !email.endsWith("@yahoo.com") && 
-                               !email.endsWith("@hotmail.com") &&
-                               !email.endsWith("@outlook.com") &&
-                               email.includes("@");
-        
-        if (!isCompanyEmail) {
-          throw new Error("HR users must use a company email address");
-        }
+      if (determineRole === "hr" && !isCompanyEmail(email)) {
+        throw new Error("HR professionals must use a company email address");
       }
       
       // Create mock user
@@ -127,7 +161,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         id: Math.random().toString(36).substring(2, 9),
         email,
         name,
-        role
+        role: determineRole
       };
       
       setUser(mockUser);
@@ -139,7 +173,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       // Redirect based on role
-      navigate(role === "hr" ? "/hr-dashboard" : "/dashboard");
+      navigate(determineRole === "hr" ? "/hr-dashboard" : "/dashboard");
       
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Please check your information and try again.";
@@ -167,7 +201,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, isLoading, validateEmail }}>
       {children}
     </AuthContext.Provider>
   );
