@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -122,7 +121,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       // Redirect based on role
-      navigate(role === "hr" ? "/hr-dashboard" : "/dashboard");
+      if (role === "hr") {
+        navigate("/hr-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
       
     } catch (error) {
       toast({
@@ -173,7 +176,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       // Redirect based on role
-      navigate(determineRole === "hr" ? "/hr-dashboard" : "/dashboard");
+      if (determineRole === "hr") {
+        navigate("/hr-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
       
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Please check your information and try again.";

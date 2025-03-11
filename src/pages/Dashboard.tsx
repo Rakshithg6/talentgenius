@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +24,15 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredJobs, setFilteredJobs] = useState<JobData[]>([]);
+  
+  // Check if user is logged in and is a candidate
+  useEffect(() => {
+    if (!user) {
+      navigate("/login", { state: { userType: "candidate", directLogin: true } });
+    } else if (user.role !== "candidate") {
+      navigate("/hr-dashboard");
+    }
+  }, [user, navigate]);
   
   const { data: jobs = [], isLoading, error } = useQuery({
     queryKey: ["jobs"],

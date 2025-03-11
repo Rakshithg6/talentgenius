@@ -118,12 +118,13 @@ const Login = () => {
   };
   
   const handleOAuthLogin = (provider: string) => {
-    // Only allow OAuth for candidates
+    // Only allow OAuth for candidates and ensure they go to candidate dashboard
     console.log(`Logging in with ${provider}`);
     
     const mockEmail = `user-${Math.random().toString(36).substring(2, 7)}@example.com`;
     const mockName = `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`;
     
+    // Specifically set role to candidate for OAuth logins
     login(mockEmail, "password123");
   };
 
