@@ -123,7 +123,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Redirect based on role
       if (role === "hr") {
         navigate("/hr-dashboard");
-      } else {
+      } else if (role === "candidate") {
         navigate("/dashboard");
       }
       
@@ -178,7 +178,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Redirect based on role
       if (determineRole === "hr") {
         navigate("/hr-dashboard");
-      } else {
+      } else if (determineRole === "candidate") {
         navigate("/dashboard");
       }
       

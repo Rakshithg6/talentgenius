@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { z } from "zod";
@@ -52,7 +51,6 @@ const Login = () => {
   const queryParams = new URLSearchParams(location.search);
   const tabParam = queryParams.get("tab");
   
-  // Get user type from location state if available
   const locationState = location.state as { userType?: UserRole, directLogin?: boolean } | null;
   const initialUserType = locationState?.userType || "candidate";
   const directLogin = locationState?.directLogin || false;
@@ -70,7 +68,6 @@ const Login = () => {
   }, [tabParam]);
 
   useEffect(() => {
-    // Set initial role based on location state if available
     if (locationState?.userType) {
       setSelectedRole(locationState.userType);
       signupForm.setValue("role", locationState.userType);
@@ -96,7 +93,6 @@ const Login = () => {
     },
   });
 
-  // Check email validity based on role
   const checkEmailValidity = (email: string, role: UserRole) => {
     const result = validateEmail(email, role);
     if (!result.valid) {
@@ -118,30 +114,25 @@ const Login = () => {
   };
   
   const handleOAuthLogin = (provider: string) => {
-    // Only allow OAuth for candidates and ensure they go to candidate dashboard
     console.log(`Logging in with ${provider}`);
     
     const mockEmail = `user-${Math.random().toString(36).substring(2, 7)}@example.com`;
     const mockName = `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`;
     
-    // Specifically set role to candidate for OAuth logins
-    login(mockEmail, "password123");
+    signup(mockEmail, mockName, "password123", "candidate");
   };
 
-  // Handle role change in signup
   const handleRoleChange = (value: string) => {
     const role = value as UserRole;
     setSelectedRole(role);
     signupForm.setValue("role", role);
     
-    // Check email validity when role changes if there's an email
     const currentEmail = signupForm.getValues("email");
     if (currentEmail) {
       checkEmailValidity(currentEmail, role);
     }
   };
   
-  // Watch for email changes in signup form
   useEffect(() => {
     const subscription = signupForm.watch((value, { name }) => {
       if (name === "email" && value.email) {
@@ -152,7 +143,6 @@ const Login = () => {
     return () => subscription.unsubscribe();
   }, [signupForm, selectedRole]);
 
-  // Check if we should show OAuth options (only for candidates)
   const showOAuthOptions = selectedRole === "candidate";
 
   return (
