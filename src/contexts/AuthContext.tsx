@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import jwt from 'jsonwebtoken'; // This is just for mock JWT implementation
 
@@ -39,16 +39,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Check for stored user on mount
   useEffect(() => {
     const storedUser = localStorage.getItem("talentGenius_user");
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      // In a real app, we would validate the JWT token here
       setUser(parsedUser);
+      
+      // If user is on index, login, or root page, redirect to their dashboard
+      if (location.pathname === "/" || location.pathname === "/login") {
+        redirectToDashboard(parsedUser.role);
+      }
     }
-  }, []);
+  }, [location.pathname]);
+
+  // Redirect to appropriate dashboard based on role
+  const redirectToDashboard = (role: UserRole) => {
+    if (role === "hr") {
+      navigate("/hr-dashboard");
+    } else if (role === "candidate") {
+      navigate("/dashboard");
+    }
+  };
 
   // Personal email domains that are not allowed for HR professionals
   const personalEmailDomains = [
@@ -149,11 +163,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       // Redirect based on role
-      if (role === "hr") {
-        navigate("/hr-dashboard");
-      } else if (role === "candidate") {
-        navigate("/dashboard");
-      }
+      redirectToDashboard(role);
       
     } catch (error) {
       toast({
@@ -211,11 +221,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       // Redirect based on role
-      if (determineRole === "hr") {
-        navigate("/hr-dashboard");
-      } else if (determineRole === "candidate") {
-        navigate("/dashboard");
-      }
+      redirectToDashboard(determineRole);
       
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Please check your information and try again.";
@@ -234,6 +240,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("talentGenius_user");
+    // Always redirect to index page on logout
     navigate("/");
     
     toast({

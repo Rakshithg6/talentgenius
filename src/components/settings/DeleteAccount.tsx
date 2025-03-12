@@ -32,7 +32,9 @@ const DeleteAccount = () => {
       description: "Your account has been permanently deleted.",
     });
     
+    // First clear user data
     logout();
+    // Then explicitly redirect to index
     navigate("/");
   };
   
