@@ -62,7 +62,7 @@ const ResumeParserStats = ({ stats = defaultStats }: { stats?: ResumeStats }) =>
                 </div>
                 <span className="text-sm">{stats.interviews} ({interviewPercentage}%)</span>
               </div>
-              <Progress value={interviewPercentage} className="h-2 bg-blue-100" indicatorClassName="bg-blue-500" />
+              <Progress value={interviewPercentage} className="h-2 bg-blue-100" />
             </div>
 
             <div className="space-y-2">
@@ -73,7 +73,7 @@ const ResumeParserStats = ({ stats = defaultStats }: { stats?: ResumeStats }) =>
                 </div>
                 <span className="text-sm">{stats.rejected} ({rejectedPercentage}%)</span>
               </div>
-              <Progress value={rejectedPercentage} className="h-2 bg-red-100" indicatorClassName="bg-red-500" />
+              <Progress value={rejectedPercentage} className="h-2 bg-red-100" />
             </div>
           </div>
         </div>

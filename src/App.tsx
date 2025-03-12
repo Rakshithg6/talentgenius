@@ -22,6 +22,9 @@ import HRChatbot from "./components/chat/HRChatbot";
 import CandidateChatbot from "./components/chat/CandidateChatbot";
 import { useAuth } from "./contexts/AuthContext";
 
+// Create a new QueryClient instance
+const queryClient = new QueryClient();
+
 // Create a component that conditionally renders the appropriate chatbot
 const ChatbotSelector = () => {
   const { user } = useAuth();

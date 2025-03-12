@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Upload, FileText, Check, X, Search } from "lucide-react";
+import { Upload, FileText, Check, X, Search, CalendarIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 
@@ -299,7 +299,7 @@ const ResumeParser = () => {
                       className="border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
                       onClick={() => updateCandidateStatus(result.id, 'interview')}
                     >
-                      <Calendar className="h-4 w-4 mr-1" /> Schedule Interview
+                      <CalendarIcon className="h-4 w-4 mr-1" /> Schedule Interview
                     </Button>
                     <Button 
                       size="sm" 
