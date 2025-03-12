@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useToast } from "@/components/ui/use-toast";
@@ -10,10 +10,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Upload, Users, FileText, Clock, CheckCircle, Activity } from "lucide-react";
 import { BarChart, Bar, PieChart, Pie, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import ResumeParserStats from "@/components/hr/ResumeParserStats";
+import ResumeParser from "@/components/hr/ResumeParser";
 
 const HRDashboard = () => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const [currentTab, setCurrentTab] = useState("overview");
 
   React.useEffect(() => {
     toast({
@@ -36,7 +39,7 @@ const HRDashboard = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
-      <main className="flex-grow page-container py-32">
+      <main className="flex-grow page-container py-16 md:py-24">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
             HR Dashboard
@@ -62,59 +65,18 @@ const HRDashboard = () => {
             </div>
           </div>
           
-          <Tabs defaultValue="overview" className="mb-12">
+          <Tabs value={currentTab} onValueChange={setCurrentTab} className="mb-12">
             <TabsList className="mb-6">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="candidates">Candidates</TabsTrigger>
               <TabsTrigger value="positions">Positions</TabsTrigger>
+              <TabsTrigger value="resume-parser">Resume Parser</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Applications by Department</CardTitle>
-                    <CardDescription>
-                      Distribution of applications across departments
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ChartContainer config={chartConfig} className="h-80">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={[
-                              { name: "Engineering", value: 35 },
-                              { name: "Marketing", value: 20 },
-                              { name: "Sales", value: 15 },
-                              { name: "Finance", value: 10 },
-                              { name: "HR", value: 5 }
-                            ]}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                            label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
-                          >
-                            {[
-                              { name: "Engineering", value: 35 },
-                              { name: "Marketing", value: 20 },
-                              { name: "Sales", value: 15 },
-                              { name: "Finance", value: 10 },
-                              { name: "HR", value: 5 }
-                            ].map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  </CardContent>
-                </Card>
+                <ResumeParserStats />
                 
                 <Card>
                   <CardHeader>
@@ -269,6 +231,10 @@ const HRDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+            
+            <TabsContent value="resume-parser">
+              <ResumeParser />
             </TabsContent>
             
             <TabsContent value="analytics">

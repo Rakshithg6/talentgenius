@@ -13,13 +13,23 @@ import Dashboard from "./pages/Dashboard";
 import HRDashboard from "./pages/HRDashboard";
 import JobPosting from "./pages/JobPosting";
 import InterviewSchedule from "./pages/InterviewSchedule";
+import Interview from "./pages/Interview";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
 import ResumeBuilder from "./pages/ResumeBuilder";
-import Chatbot from "./components/chat/Chatbot";
+import HRChatbot from "./components/chat/HRChatbot";
+import CandidateChatbot from "./components/chat/CandidateChatbot";
+import { useAuth } from "./contexts/AuthContext";
 
-const queryClient = new QueryClient();
+// Create a component that conditionally renders the appropriate chatbot
+const ChatbotSelector = () => {
+  const { user } = useAuth();
+  
+  if (!user) return null;
+  
+  return user.role === "hr" ? <HRChatbot /> : <CandidateChatbot />;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -46,6 +56,11 @@ const App = () => (
             <Route path="/resume-builder" element={
               <ProtectedRoute allowedRoles={["candidate"]}>
                 <ResumeBuilder />
+              </ProtectedRoute>
+            } />
+            <Route path="/interview" element={
+              <ProtectedRoute allowedRoles={["candidate"]}>
+                <Interview />
               </ProtectedRoute>
             } />
             <Route path="/settings" element={
@@ -75,8 +90,8 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           
-          {/* Global Chatbot */}
-          <Chatbot />
+          {/* Role-based Chatbot */}
+          <ChatbotSelector />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

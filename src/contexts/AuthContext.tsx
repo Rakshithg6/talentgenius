@@ -1,6 +1,8 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import jwt from 'jsonwebtoken'; // This is just for mock JWT implementation
 
 // User types
 export type UserRole = "hr" | "candidate" | null;
@@ -10,6 +12,7 @@ type User = {
   email: string;
   name: string;
   role: UserRole;
+  token?: string; // JWT token
 } | null;
 
 type AuthContextType = {
@@ -41,7 +44,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem("talentGenius_user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      // In a real app, we would validate the JWT token here
+      setUser(parsedUser);
     }
   }, []);
 
@@ -88,6 +93,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { valid: true };
   };
 
+  // Generate a mock JWT token
+  const generateMockToken = (userId: string, email: string, role: UserRole): string => {
+    // In a real app, this would be done on the server
+    const payload = {
+      sub: userId,
+      email,
+      role,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 hour
+    };
+    
+    // This is just a mock implementation - not secure!
+    // In production, JWT would be generated server-side
+    return `mock.jwt.token.${btoa(JSON.stringify(payload))}`;
+  };
+
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     
@@ -104,12 +125,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Determine role based on email domain
       const role = determineUserRole(email);
       
+      // Generate userId
+      const userId = Math.random().toString(36).substring(2, 9);
+      
+      // Generate mock JWT token
+      const token = generateMockToken(userId, email, role);
+      
       // Create mock user
       const mockUser = {
-        id: Math.random().toString(36).substring(2, 9),
+        id: userId,
         email,
         name: email.split('@')[0], // Just a placeholder
-        role
+        role,
+        token
       };
       
       setUser(mockUser);
@@ -159,12 +187,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("HR professionals must use a company email address");
       }
       
+      // Generate userId
+      const userId = Math.random().toString(36).substring(2, 9);
+      
+      // Generate mock JWT token
+      const token = generateMockToken(userId, email, determineRole);
+      
       // Create mock user
       const mockUser = {
-        id: Math.random().toString(36).substring(2, 9),
+        id: userId,
         email,
         name,
-        role: determineRole
+        role: determineRole,
+        token
       };
       
       setUser(mockUser);
