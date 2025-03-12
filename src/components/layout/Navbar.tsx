@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -44,6 +49,21 @@ const Navbar = () => {
     } else {
       navigate("/login", { state: { userType: "candidate", directLogin: true } });
     }
+  };
+
+  // Get user initials for avatar
+  const getUserInitials = () => {
+    if (!user || !user.name) return "U";
+    
+    const names = user.name.split(" ");
+    if (names.length === 1) return names[0].charAt(0).toUpperCase();
+    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+  };
+
+  // Get user role display text
+  const getUserRoleDisplay = () => {
+    if (!user || !user.role) return "";
+    return user.role === "hr" ? "HR Professional" : "Job Seeker";
   };
 
   return (
@@ -156,23 +176,58 @@ const Navbar = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="rounded-full gap-2">
-                    <User className="h-4 w-4" />
-                    {user.name}
+                    <Avatar className="h-6 w-6">
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span>{user.name}</span>
+                    <Badge variant="outline" className="ml-1 text-xs font-normal">
+                      {getUserRoleDisplay()}
+                    </Badge>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.name}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate("/settings")}>
                     <Settings className="h-4 w-4 mr-2" />
-                    Settings
+                    Account Settings
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/settings?tab=notifications")}>
                     <Bell className="h-4 w-4 mr-2" />
                     Notifications
                   </DropdownMenuItem>
+                  {user.role === "hr" ? (
+                    <>
+                      <DropdownMenuItem onClick={() => navigate("/hr-dashboard")}>
+                        <Briefcase className="h-4 w-4 mr-2" />
+                        HR Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate("/job-posting")}>
+                        <PlusCircle className="h-4 w-4 mr-2" />
+                        Post Job
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                        <Briefcase className="h-4 w-4 mr-2" />
+                        Job Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate("/resume-builder")}>
+                        <FileText className="h-4 w-4 mr-2" />
+                        Resume Builder
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>
+                  <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />
                     Log out
                   </DropdownMenuItem>
@@ -319,13 +374,42 @@ const Navbar = () => {
               </button>
               
               {user && (
-                <Link
-                  to="/settings"
-                  className={`nav-link ${isActive("/settings") ? "text-primary" : ""}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Settings
-                </Link>
+                <>
+                  <div className="py-3 px-4 mt-2 bg-muted/30 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarFallback className="bg-primary/10 text-primary">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                        <Badge variant="outline" className="mt-1 text-xs font-normal">
+                          {getUserRoleDisplay()}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Link
+                    to="/settings"
+                    className={`nav-link flex items-center ${isActive("/settings") ? "text-primary" : ""}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Account Settings
+                  </Link>
+                  
+                  <Link
+                    to="/settings?tab=notifications"
+                    className={`nav-link flex items-center ${isActive("/settings?tab=notifications") ? "text-primary" : ""}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Bell className="h-4 w-4 mr-2" />
+                    Notifications
+                  </Link>
+                </>
               )}
               
               <div className="flex flex-col space-y-2 pt-4">
