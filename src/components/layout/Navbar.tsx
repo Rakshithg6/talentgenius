@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -171,6 +172,7 @@ const Navbar = () => {
             </button>
           </nav>
 
+          {/* User Account / Login Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
               <DropdownMenu>
@@ -253,17 +255,31 @@ const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <button
-            className="md:hidden text-foreground p-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
+          <div className="md:hidden flex items-center space-x-2">
+            {/* Add mobile account button */}
+            {user && (
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full mr-1"
+                onClick={() => navigate("/settings")}
+              >
+                <User className="h-4 w-4" />
+              </Button>
             )}
-          </button>
+            
+            <button
+              className="text-foreground p-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
