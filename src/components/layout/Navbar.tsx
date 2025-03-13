@@ -67,6 +67,47 @@ const Navbar = () => {
     return user.role === "hr" ? "HR Professional" : "Job Seeker";
   };
 
+  // Create HR or candidate specific dropdown items based on user role
+  const renderRoleSpecificDropdownItems = () => {
+    if (!user) return null;
+    
+    if (user.role === "hr") {
+      return (
+        <>
+          <DropdownMenuItem onClick={() => navigate("/hr-dashboard")}>
+            <Briefcase className="h-4 w-4 mr-2" />
+            HR Dashboard
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/job-posting")}>
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Post Job
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/interview-schedule")}>
+            <Calendar className="h-4 w-4 mr-2" />
+            Interviews
+          </DropdownMenuItem>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+            <Briefcase className="h-4 w-4 mr-2" />
+            Job Dashboard
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/upload")}>
+            <Upload className="h-4 w-4 mr-2" />
+            Resume Upload
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/resume-builder")}>
+            <FileText className="h-4 w-4 mr-2" />
+            Resume Builder
+          </DropdownMenuItem>
+        </>
+      );
+    }
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -197,6 +238,8 @@ const Navbar = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  {renderRoleSpecificDropdownItems()}
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate("/settings")}>
                     <Settings className="h-4 w-4 mr-2" />
                     Account Settings
@@ -205,29 +248,6 @@ const Navbar = () => {
                     <Bell className="h-4 w-4 mr-2" />
                     Notifications
                   </DropdownMenuItem>
-                  {user.role === "hr" ? (
-                    <>
-                      <DropdownMenuItem onClick={() => navigate("/hr-dashboard")}>
-                        <Briefcase className="h-4 w-4 mr-2" />
-                        HR Dashboard
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate("/job-posting")}>
-                        <PlusCircle className="h-4 w-4 mr-2" />
-                        Post Job
-                      </DropdownMenuItem>
-                    </>
-                  ) : (
-                    <>
-                      <DropdownMenuItem onClick={() => navigate("/dashboard")}>
-                        <Briefcase className="h-4 w-4 mr-2" />
-                        Job Dashboard
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate("/resume-builder")}>
-                        <FileText className="h-4 w-4 mr-2" />
-                        Resume Builder
-                      </DropdownMenuItem>
-                    </>
-                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />
@@ -256,16 +276,46 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-2">
-            {/* Add mobile account button */}
+            {/* Mobile account button - always visible when logged in */}
             {user && (
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="rounded-full mr-1"
-                onClick={() => navigate("/settings")}
-              >
-                <User className="h-4 w-4" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="rounded-full h-9 w-9 p-0">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.name}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                      <Badge className="mt-1 w-fit text-xs font-normal">
+                        {getUserRoleDisplay()}
+                      </Badge>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {renderRoleSpecificDropdownItems()}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate("/settings")}>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Account Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/settings?tab=notifications")}>
+                    <Bell className="h-4 w-4 mr-2" />
+                    Notifications
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
             
             <button
